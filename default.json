@@ -92,6 +92,8 @@
       "groupName": "type definitions"
     },
 
+    // Repos are split across linters: Tracearr and Mobile-App run oxlint (required
+    // for TypeScript 7), the rest still run ESLint. One group covers both.
     {
       "matchManagers": ["npm"],
       "matchPackageNames": [
@@ -100,9 +102,11 @@
         "@eslint/*",
         "typescript-eslint",
         "@typescript-eslint/*",
+        "@eslint-react/*",
+        "oxlint",
+        "oxlint-tsgolint",
         "prettier",
         "prettier-*",
-        "oxlint",
         "husky",
         "lint-staged"
       ],
