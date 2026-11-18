@@ -49,12 +49,19 @@
   },
   "osvVulnerabilityAlerts": true,
 
+  // All weekend: scheduled workflows fire every few hours, and a single Monday-morning
+  // window left room for one run, so one failed run lost the week.
   "lockFileMaintenance": {
     "enabled": true,
-    "schedule": ["* 0-5 * * 1"],
+    "schedule": ["* * * * 0,6"],
     "commitMessageAction": "Refresh",
     "commitMessageTopic": "lockfile"
   },
+
+  // npm 12 refuses registry tarballs of packages with bundleDependencies
+  // (EALLOWREMOTE, npm/cli#9800), so every npm lockfile write touching Tailwind 4's
+  // oxide-wasm32-wasi fails. Lift once a fixed npm 12 ships.
+  "constraints": { "npm": "^11.0.0" },
 
   // No global minimumReleaseAge: best-practices gives npm 3d, and a floor on
   // Docker digests resets on every tag re-push so the group never clears.
@@ -138,9 +145,12 @@
       "automerge": true
     },
 
+    // Renovate sorts lockfile maintenance after every other update type, so a full
+    // prConcurrentLimit starved it every week.
     {
       "matchUpdateTypes": ["lockFileMaintenance"],
-      "automerge": true
+      "automerge": true,
+      "prPriority": 10
     },
 
     // ----- docker images -----
